@@ -1,4 +1,4 @@
-function x = solve_SD(A, b, tol)
+function x = solve_SD(A, b, tol, iterations)
 % This function implements the steepest descent algorithm
 % Inputs: 
 %           A: input square matrix 
@@ -11,14 +11,16 @@ x = rand(length(A), 1);
 
 % Declaring residual
 r = b - A*x;
-
-while norm(r) > tol
+k=1;
+while norm(r) > tol && k <= iterations
     % Calculating step length
     alpha = transpose(r)*r/(transpose(r)*A*r);
     % Update approximative solution
     x = x + alpha.*r;
     % Update residual
     r = b - A*x;
+    
+    k=k+1;
 end
 
 end
