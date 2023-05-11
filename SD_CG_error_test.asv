@@ -7,10 +7,14 @@ format long;
 data = load('Matrices.mat');
 
 %% A1 matrix
+% data.A1
+N = 10;
 tol = eps;
 
 A = data.A1;
+% A = data.A2;
 b = data.b1;
+% b = data.b2;
 
 [~, err_SD] = solve_SD_it(A, b, tol);
 [~, err_CG] = solve_CG_it(A, b, tol);
@@ -36,6 +40,9 @@ hold on
 
 
 %% Matrix A2
+
+
+% data.A1
 
 tol = eps;
 

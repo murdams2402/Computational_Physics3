@@ -15,7 +15,7 @@ r = b - A*x;
 % Declaring direction
 d = r;
 
-it = [];
+it = zeros(10, 1);
 x_th = A\b;
 k=1;
 
