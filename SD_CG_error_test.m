@@ -15,18 +15,8 @@ A = data.A1;
 b = data.b1;
 % b = data.b2;
 
-x_th = A\b;
-
-err_SD = zeros(N, 1);
-err_CG = zeros(N, 1);
-N_itr = 10.^(1:N);
-
-for i = 1:N
-    x_SD = solve_SD(A, b, tol, 10^i);
-    x_CG = solve_CG(A, b, tol, 10^i);
-    err_SD(i) = norm(x_th - x_SD)/norm(x_th);
-    err_CG(i) = norm(x_th - x_CG)/norm(x_th);
-end
+[~, err_SD] = solve_SD_it(A, b, tol);
+[~, err_CG] = solve_CG_it(A, b, tol);
 
 
 figure

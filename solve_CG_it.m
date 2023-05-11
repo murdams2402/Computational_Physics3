@@ -1,4 +1,4 @@
-function x = solve_CG(A, b, tol, iterations)
+function [x, it] = solve_CG_it(A, b, tol)
 % This function implements the conjugate gradient algorithm
 % Inputs: 
 %           A: input square matrix 
@@ -15,8 +15,11 @@ r = b - A*x;
 % Declaring direction
 d = r;
 
-k = 1;
-while norm(r) > tol && k <= iterations
+it = [];
+x_th = A\b;
+k=1;
+
+while norm(r) > tol
     % Calculating step length
     alpha = r'*r/(d'*A*d);
     % Update approximative solution
@@ -31,7 +34,9 @@ while norm(r) > tol && k <= iterations
     % Updating the residual for 'while' test
     r = r_new;
     
-    k = k + 1;
+    it(k) = norm(x_th - x)/norm(x_th);
+    k=k+1;
+    
 end
 
 end
