@@ -19,17 +19,18 @@ b = data.b1;
 N_itr = (1:length(err_SD));
 
 figure
-plot(N_itr, err_SD, '-+b', 'Linewidth', lw)
-xlabel('$x$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$y$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
+semilogy(N_itr, err_SD, '-+b', 'Linewidth', lw)
+xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 hold on
 
+N_itr = (1:length(err_CG));
 figure
-plot(N_itr, err_CG, '-+m', 'Linewidth', lw)
-xlabel('$x$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$y$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
+semilogy(N_itr, err_CG, '-+m', 'Linewidth', lw)
+xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 hold on
@@ -49,21 +50,24 @@ b = data.b2;
 N_itr = (1:length(err_SD));
 
 figure
-plot(N_itr, err_SD, '-+b', 'Linewidth', lw)
-xlabel('$x$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$y$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
+semilogy(N_itr, err_SD, '-+b', 'Linewidth', lw)
+xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 hold on
 
+N_itr = (1:length(err_CG));
 figure
-plot(N_itr, err_CG, '-+m', 'Linewidth', lw)
-xlabel('$x$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$y$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
+semilogy(N_itr, err_CG, '-+m', 'Linewidth', lw)
+xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 hold on
-
-
+%%
+ kappa = cond(A)
+% SD
+n_eps = log(eps)/log((kappa-1)/(kappa+1))
 
 

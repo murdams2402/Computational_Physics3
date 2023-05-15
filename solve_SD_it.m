@@ -1,7 +1,7 @@
 function [x, it] = solve_SD_it(A, b, tol)
 % This function implements the steepest descent algorithm
 % Inputs: 
-%           A: input square matrix 
+%           A: input square symmetric positive-definite matrix 
 %           b: right-hand side vector of a linear equation A·x = b
 %           tol: tolerance for iterations
 %           iterations: maximum number of itertions
@@ -17,7 +17,7 @@ it = zeros(10, 1);
 x_th = A\b;
 
 k=1;
-while norm(r) > tol 
+while norm(r) > tol && k <= 2.7e6
     % Calculating step length
     alpha = transpose(r)*r/(transpose(r)*A*r);
     % Update approximative solution

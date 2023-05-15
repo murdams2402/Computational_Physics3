@@ -1,7 +1,7 @@
 function [x, it] = solve_CG_it(A, b, tol)
 % This function implements the conjugate gradient algorithm
 % Inputs: 
-%           A: input square matrix 
+%           A: input square symmetric positive-definite matrix 
 %           b: right-hand side vector of a linear equation A·x = b
 %           tol: tolerance for iterations
 %           iterations: maximum number of itertions
@@ -19,7 +19,7 @@ it = zeros(10, 1);
 x_th = A\b;
 k=1;
 
-while norm(r) > tol
+while norm(r) > tol && k <= 100
     % Calculating step length
     alpha = r'*r/(d'*A*d);
     % Update approximative solution

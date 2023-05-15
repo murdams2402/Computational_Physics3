@@ -1,7 +1,7 @@
 function x = solve_CG(A, b, tol, iterations)
 % This function implements the conjugate gradient algorithm
 % Inputs: 
-%           A: input square matrix 
+%           A: input square symmetric positive-definite matrix 
 %           b: right-hand side vector of a linear equation A·x = b
 %           tol: tolerance for iterations
 %           iterations: maximum number of itertions

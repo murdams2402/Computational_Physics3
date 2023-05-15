@@ -7,14 +7,10 @@ format long;
 data = load('Matrices.mat');
 
 %% A1 matrix
-% data.A1
-N = 10;
 tol = eps;
 
 A = data.A1;
-% A = data.A2;
 b = data.b1;
-% b = data.b2;
 
 [~, err_SD] = solve_SD_it(A, b, tol);
 [~, err_CG] = solve_CG_it(A, b, tol);
@@ -23,26 +19,24 @@ b = data.b1;
 N_itr = (1:length(err_SD));
 
 figure
-plot(N_itr, err_SD, '-+b', 'Linewidth', lw)
-xlabel('$x$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$y$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
+semilogy(N_itr, err_SD, '-+b', 'Linewidth', lw)
+xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 hold on
 
+N_itr = (1:length(err_CG));
 figure
-plot(N_itr, err_CG, '-+m', 'Linewidth', lw)
-xlabel('$x$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$y$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
+semilogy(N_itr, err_CG, '-+m', 'Linewidth', lw)
+xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 hold on
 
 
 %% Matrix A2
-
-
-% data.A1
 
 tol = eps;
 
@@ -56,21 +50,25 @@ b = data.b2;
 N_itr = (1:length(err_SD));
 
 figure
-plot(N_itr, err_SD, '-+b', 'Linewidth', lw)
-xlabel('$x$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$y$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
+semilogy(N_itr, err_SD, '-+b', 'Linewidth', lw)
+xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 hold on
 
+N_itr = (1:length(err_CG));
 figure
-plot(N_itr, err_CG, '-+m', 'Linewidth', lw)
-xlabel('$x$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$y$ [nm]', 'Interpreter', 'latex', 'fontsize', fs_label);
+semilogy(N_itr, err_CG, '-+m', 'Linewidth', lw)
+xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 hold on
-
+%%
+ kappa = cond(A)
+% SD
+n_eps = log(10*eps)/log((kappa-1)/(kappa+1))
 
 
 
