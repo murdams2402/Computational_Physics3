@@ -19,7 +19,7 @@ it = zeros(10, 1);
 x_th = A\b;
 k=1;
 
-while norm(r) > tol && k <= 100
+while norm(r) > tol
     % Calculating step length
     alpha = r'*r/(d'*A*d);
     % Update approximative solution

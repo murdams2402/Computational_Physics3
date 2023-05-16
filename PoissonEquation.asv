@@ -4,7 +4,7 @@ set(groot, 'defaultAxesFontSize', fs);
 format long;
 
 % N has to be an odd number
-N = 45;
+N = 11;
 L = 45;
 
 [H, b] = generate_Hb(N);
@@ -49,7 +49,7 @@ test.Label.Interpreter = 'latex';
 
 [x_SD, err_SD] = solve_SD_it(H'*H, H'*b, eps);
 [x_CG, err_CG] = solve_CG_it(H'*H, H'*b, eps);
-%%
+
 
 V_SD = zeros(N, N);
 V_CG = V_SD;
@@ -115,32 +115,20 @@ ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 
-%% Plotting the electric field (using exact solution for the potential V)
-x = (0:h:L);
-[Ex, Ey] = gradient(V);
-% [Ex, Ey] = gradient(V_CG) or gradient(V_SD)
-Ex = -Ex; Ey=-Ey;
 
-scale = 3.5;
+x = (0:h:L);
+[Ex, Ey] = gradient(V_CG);
+Ex = -Ex; Ey=-Ey;
+scale=1;
 
 figure
-% contour, contourfm pcolor or surf
-c = pcolor(X, Y, transpose(V));
-%c.LineStyle = 'none';
+[~, c] = contour(X, Y, transpose(V_CG), 20)
+c.LineWidth = lw;
 xlabel('$x$', 'Interpreter', 'latex', 'fontsize', fs_label);
 ylabel('$y$', 'Interpreter', 'latex', 'fontsize', fs_label);
-set(c, 'edgecolor', 'none', 'LineWidth', lw);
+%set(c, 'edgecolor', 'interp', 'LineWidth', lw);
 box on
 hold on
 q=quiver(x, x, Ex, Ey, scale, '-k');
 q.LineWidth = lw;
-colormap jet
-test = colorbar;
-colormap jet
-caxis([min(min(V)) max(max(V))]);
-test.FontSize = 25;
-test.TickLabelInterpreter = 'latex';
-test.Label.String = "$V(x, y)$ [V] ";
-test.Label.FontSize = 30;
-test.Label.Interpreter = 'latex';
 
