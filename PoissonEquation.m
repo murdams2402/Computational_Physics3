@@ -46,10 +46,10 @@ test.Label.Interpreter = 'latex';
 
 
 %% Testing with SD and CG methods
-[x_SD, err_SD] = solve_SD_it(H'*H, H'*b, eps);
-%%
+[x_SD, err_SD] = solve_SD_it(H'*H, H'*b, 1e-3);
+
 [x_CG, err_CG] = solve_CG_it(H'*H, H'*b, eps);
-%%
+
 
 V_SD = zeros(N, N);
 V_CG = V_SD;
@@ -115,7 +115,7 @@ ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 
-%% Plotting the electric field (using exact solution for the potential V)
+% Plotting the electric field (using exact solution for the potential V)
 x = (0:h:L);
 [Ex, Ey] = gradient(V);
 % [Ex, Ey] = gradient(V_CG) or gradient(V_SD)

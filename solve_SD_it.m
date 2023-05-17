@@ -17,7 +17,7 @@ it = zeros(10, 1);
 x_th = A\b;
 
 k=1;
-while norm(r) > tol && k <= 9e5
+while norm(r) > tol
     % Calculating step length
     alpha = transpose(r)*r/(transpose(r)*A*r);
     % Update approximative solution
