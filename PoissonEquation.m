@@ -115,7 +115,7 @@ ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
 grid on
 
-% Plotting the electric field (using exact solution for the potential V)
+%% Plotting the electric field (using exact solution for the potential V)
 x = (0:h:L);
 [Ex, Ey] = gradient(V);
 % [Ex, Ey] = gradient(V_CG) or gradient(V_SD)
@@ -132,7 +132,7 @@ ylabel('$y$', 'Interpreter', 'latex', 'fontsize', fs_label);
 set(c, 'edgecolor', 'none', 'LineWidth', lw);
 box on
 hold on
-q=quiver(x, x, Ex, Ey, scale, '-k');
+q=quiver(x, x, Ey', Ex', scale, '-k');
 q.LineWidth = lw;
 colormap jet
 test = colorbar;
@@ -144,26 +144,67 @@ test.Label.String = "$V(x, y)$ [V] ";
 test.Label.FontSize = 30;
 test.Label.Interpreter = 'latex';
 
-%% Jacobi preconditioning
-A = H'*H;
-n = length(A);
-M = zeros(n, n);
-for i = 1:n
-    M(i, i) = A(i, i);
-end
-M_inv = M^-1;
 
-[x_SD, err_SD] = solve_SD_it(M_inv*H'*H, M_inv*H'*b, eps);
-[x_CG, err_CG] = solve_CG_it(M_inv*H'*H, M_inv*H'*b, eps);
+% Gradient using CG
+[Ex, Ey] = gradient(V_CG);
+Ex = -Ex; Ey=-Ey;
+figure
+% contour, contourfm pcolor or surf
+c = pcolor(X, Y, transpose(V_CG));
+%c.LineStyle = 'none';
+xlabel('$x$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$y$', 'Interpreter', 'latex', 'fontsize', fs_label);
+set(c, 'edgecolor', 'none', 'LineWidth', lw);
+box on
+hold on
+q=quiver(x, x, Ey', Ex', scale, '-k');
+q.LineWidth = lw;
+colormap jet
+test = colorbar;
+colormap jet
+caxis([min(min(V_CG)) max(max(V_CG))]);
+test.FontSize = 25;
+test.TickLabelInterpreter = 'latex';
+test.Label.String = "$V(x, y)$ [V] ";
+test.Label.FontSize = 30;
+test.Label.Interpreter = 'latex';
+
+
+% Gradient using SD
+[Ex, Ey] = gradient(V_SD);
+Ex = -Ex; Ey=-Ey;
+figure
+% contour, contourfm pcolor or surf
+c = pcolor(X, Y, transpose(V_SD));
+%c.LineStyle = 'none';
+xlabel('$x$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$y$', 'Interpreter', 'latex', 'fontsize', fs_label);
+set(c, 'edgecolor', 'none', 'LineWidth', lw);
+box on
+hold on
+q=quiver(x, x, Ey', Ex', scale, '-k');
+q.LineWidth = lw;
+colormap jet
+test = colorbar;
+colormap jet
+caxis([min(min(V_SD)) max(max(V_SD))]);
+test.FontSize = 25;
+test.TickLabelInterpreter = 'latex';
+test.Label.String = "$V(x, y)$ [V] ";
+test.Label.FontSize = 30;
+test.Label.Interpreter = 'latex';
+
+
+%% Jacobi preconditioning
+
+[x_SD, err_SD] = solve_SD_JacobiPrecond_it(H'*H, H'*b, 1e-5);
 
 
 V_SD = zeros(N, N);
-V_CG = V_SD;
 
 for i = 1:N
     for j= 1:N
         V_SD(i, j) = x_SD(index(i, j, N));
-        V_CG(i, j) = x_CG(index(i, j, N));
     end
 end
 
@@ -184,38 +225,12 @@ test.Label.FontSize = 30;
 test.Label.Interpreter = 'latex';
 
 
-figure
-s = surf(X, Y, transpose(V_CG));
-xlabel('$x$', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$y$', 'Interpreter', 'latex', 'fontsize', fs_label);
-set(s, 'edgecolor', 'none', 'LineWidth', lw);
-box on
-colormap jet
-test = colorbar;
-colormap jet
-caxis([min(min(V_CG)) max(max(V_CG))]);
-test.FontSize = 25;
-test.TickLabelInterpreter = 'latex';
-test.Label.String = "$V(x, y)$ [V] ";
-test.Label.FontSize = 30;
-test.Label.Interpreter = 'latex';
-
-
 n_SD = length(err_SD);
-n_CG = length(err_CG);
 
 N_SD = (1:n_SD);
-N_CG = (1:n_CG);
 
 figure('Name', 'SD')
 semilogy(N_SD, err_SD, '-+b', 'Linewidth', lw)
-xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
-box on
-grid on
-
-figure('Name', 'CG')
-semilogy(N_CG, err_CG, '-+m', 'Linewidth', lw)
 xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
 ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
 box on
