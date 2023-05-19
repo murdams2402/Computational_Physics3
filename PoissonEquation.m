@@ -197,8 +197,7 @@ test.Label.Interpreter = 'latex';
 
 %% Jacobi preconditioning
 
-[x_SD, err_SD] = solve_SD_JacobiPrecond_it(H'*H, H'*b, 1e-5);
-
+[x_SD, err_SD] = solve_SD_JacobiPrecond_it(H'*H, H'*b, eps);
 
 V_SD = zeros(N, N);
 
