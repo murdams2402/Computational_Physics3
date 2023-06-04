@@ -1,0 +1,163 @@
+fs=33; fs_label = 40; lw = 2;
+set(groot, 'defaultAxesTickLabelInterpreter', 'latex');
+set(groot, 'defaultAxesFontSize', fs);
+format long;
+
+
+r = 1/4 * [3 -1; -1 1];
+% [V,D] = eigs(r)
+P = 1/2 * [sqrt(2+sqrt(2)), sqrt(2-sqrt(2)); -sqrt(2)/sqrt(2+sqrt(2)), sqrt(2)/sqrt(2-sqrt(2))];
+D = P' * r * P;
+
+
+%% p1.csv
+file = 'ps1.csv';
+data = readtable(file);
+
+p = data.Var1;
+M_0 = 1/2*ones(length(p), 1);
+M = [1, 0, 0; -1, 0, 0; 0, 1, 0; 0, -1, 0; 0, 0, 1; 0, 0, -1];
+
+%format rational
+rho = pinv(M)*(p-M_0);
+rho = [0.5 + rho(3),  rho(1) - 1i*rho(2); rho(1) + 1i*rho(2), 0.5 - rho(3)];
+[~,D1] = eigs(rho);
+
+[~,S_1,~] = svd(M)
+
+%% p2.csv
+file = 'ps2.csv';
+data = readtable(file);
+
+p = data.Var1;
+M_0 = 1/2*ones(length(p), 1);
+M = [1, 0, 0; -1, 0, 0; 0, 1, 0; 0, -1, 0; 0, 0, 1; 0, 0, -1];
+%format rational
+%format long
+rho = pinv(M)*(p-M_0);
+rho = [0.5 + rho(3),  rho(1) - 1i*rho(2); rho(1) + 1i*rho(2), 0.5 - rho(3)];
+[V,D] = eigs(rho);
+
+[~,S_2,~] = svd(M)
+
+%% Re-do
+% ps1.csv file 
+file = 'ps1.csv';
+data = readtable(file);
+data1 = data;
+p = data.Var1;
+p=p(1:4);
+M_0 = 1/2*ones(length(p), 1);
+M = [1, 0, 0; -1, 0, 0; 0, 1, 0; 0, -1, 0]; %; 0, 0, 1; 0, 0, -1];
+rho = pinv(M)*(p-M_0);
+rho = [0.5 + rho(3),  rho(1) - 1i*rho(2); rho(1) + 1i*rho(2), 0.5 - rho(3)];
+
+
+% ps2.csv file
+file = 'ps2.csv';
+data = readtable(file);
+
+p = data.Var1;
+p=p(1:4);
+rho = pinv(M)*(p-M_0)
+rho = [0.5 + rho(3),  rho(1) - 1i*rho(2); rho(1) + 1i*rho(2), 0.5 - rho(3)]
+[P,D] = eigs(rho)
+
+[U,S,V] = svd(M)
+
+%% Arbitrary direction
+
+sigma_x = [0, 1; 1, 0];
+sigma_y = [0, -1i; 1i, 0];
+sigma_z = [1, 0; 0, -1];
+
+sigma = {sigma_x, sigma_y, sigma_z};
+
+theta = 5*pi/7;
+N=200;
+
+P = cell(N, 1);
+
+for n = 1:N
+    phi = 2*pi*(n-1)/N;
+    
+    psi = [cos(theta/2); exp(1i*phi)*sin(theta/2)];
+    Pn_prime = kron(psi, psi')
+    
+    Pn = [cos(theta/2)*cos(theta/2), exp(-1i*phi)*cos(theta/2)*sin(theta/2); 
+        exp(1i*phi)*cos(theta/2)*sin(theta/2), sin(theta/2)*sin(theta/2)]
+    
+    P{n} = Pn;
+end
+
+M = zeros(N, 3);
+for i = 1:N
+    for j = 1:3
+        M(i, j) = trace(sigma{j}*P{i});
+    end
+end
+M
+
+S = svd(M)
+%%
+file = 'ps3.csv';
+data = readtable(file);
+
+p = data.Var1;
+M_0 = 1/2*ones(length(p), 1);
+rho = pinv(M)*(p-M_0)
+rho = [0.5 + rho(3),  rho(1) - 1i*rho(2); rho(1) + 1i*rho(2), 0.5 - rho(3)]
+[~,D] = eigs(rho)
+
+
+%% EWV
+N = 400;
+theta_ = linspace(0, pi,N);
+EWV = zeros(N, 1);
+
+for k = 1:N
+    temp = 0;
+    theta = theta_(k);
+    % Computing the projection operators
+    P = cell(N, 1);
+    for n = 1:N
+    phi = 2*pi*(n-1)/N;
+    psi = [ cos(theta/2); exp(1i*phi)*sin(theta/2) ];
+    Pn = kron(psi, psi');
+
+    P{n} = Pn;
+    end
+    % Computing the measurement matrix for given theta
+    M = zeros(N, 3);
+    for i = 1:N
+        for j = 1:3
+            M(i, j) = trace(sigma{j}*P{i});
+        end
+    end
+    Minv = pinv(M);
+    % Computing the EWV(theta)
+    for n = 1:N
+        for m = 1:3
+            delta_p = 0.1 + 1e-3*(n-1);
+            temp = temp + Minv(m, n)^2*delta_p^2;
+        end
+    end
+    EWV(k) = temp;
+end
+
+figure
+plot(theta_, real(EWV), '-b', 'Linewidth', lw)
+xlabel('$\theta\ [\rm rad]$', 'Interpreter', 'latex', 'fontsize', fs_label);
+ylabel('$EWV$', 'Interpreter', 'latex', 'fontsize', fs_label);
+box on
+grid on
+% hold on
+% xl = xline(pi,'--k')
+% xl.LineWidth = 2;
+% xl.Interpreter = 'latex';
+% xl.FontSize = 25;
+% xl.Label = '$\pi$'
+% xl.LabelVerticalAlignment = 'middle';
+% xl.LabelHorizontalAlignment = 'left';
+% xl.LabelOrientation = 'horizontal';
+

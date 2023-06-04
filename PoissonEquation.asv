@@ -197,7 +197,8 @@ test.Label.Interpreter = 'latex';
 
 %% Jacobi preconditioning
 % run the first part first before running this one
-[x_CG, err_CG] = solve_CG_JacobiPrecond_it(sparse(H'*H), H'*b, eps);
+[x_Sd, err_Sd] = solve_SD(M\H, M\b, 1e-3);
+[x_CG, err_CG] = solve_CG_JacobiPrecond_it(H'*H, H'*b, 1e-3);
 
 V_CG = zeros(N, N);
 
@@ -236,40 +237,4 @@ box on
 grid on
 
 
-M = diag(diag(H));
-[x_Sd, err_Sd] = solve_SD_it(sparse(M\H), M\b, 1e-10);
-V_SD = zeros(N, N);
 
-for i = 1:N
-    for j= 1:N
-        V_SD(i, j) = x_Sd(index(i, j, N));
-    end
-end
-
-figure
-s = surf(X, Y, transpose(V_SD));
-xlabel('$x$', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$y$', 'Interpreter', 'latex', 'fontsize', fs_label);
-set(s, 'edgecolor', 'none', 'LineWidth', lw);
-box on
-colormap jet
-test = colorbar;
-colormap jet
-caxis([min(min(V_SD)) max(max(V_SD))]);
-test.FontSize = 25;
-test.TickLabelInterpreter = 'latex';
-test.Label.String = "$V(x, y)$ [V] ";
-test.Label.FontSize = 30;
-test.Label.Interpreter = 'latex';
-
-
-n_Sd = length(err_Sd);
-
-N_Sd = (1:n_Sd);
-
-figure('Name', 'SD')
-semilogy(N_Sd, err_Sd, '-+b', 'Linewidth', lw)
-xlabel('$N_{\rm iterations}$', 'Interpreter', 'latex', 'fontsize', fs_label);
-ylabel('$\epsilon$', 'Interpreter', 'latex', 'fontsize', fs_label);
-box on
-grid on

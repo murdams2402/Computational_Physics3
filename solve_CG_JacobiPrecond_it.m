@@ -1,4 +1,4 @@
-function [x, it] = solve_SD_JacobiPrecond_it(A, b, tol)
+function [x, it] = solve_CG_JacobiPrecond_it(A, b, tol)
 % This function implements the steepest descent algorithm
 % Inputs: 
 %           A: input square symmetric positive-definite matrix 

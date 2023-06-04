@@ -1,51 +1,49 @@
-function x = solve_NonLinear_CG_it(N, dim, X, Diff, Hess, tol, tol_star, it_max)
+function x = solve_NonLinear_CG_it(x_init, N, dim, X, Diff_E, Hess_E, tol, tol_star)
 % This function implements the conjugate gradient algorithm
 % Inputs: 
+%           x_init: initial guess for the minimum
+%           N: number of atoms
+%           dim: dimension of the space
+%           X: N x dim sym object matrix, which contains the vector 
+%              coordinates of each atom in it's rows
+%           Diff_E: 1 x N·dim sym object column vector, gradient of the
+%           energy function
+%           Hess_E: N·dim x N·dim sym object, Hessian matrix of the energy
+%           function
 %           tol: tolerance for iterations
-%           iterations: maximum number of itertions
+%           tol_star: second tolerance for inner iterations
 % Returns:
-%           x: the solution of the the said linear equation
+%           x: N x dim matrix that minimizes E
 
 
-x = rand(N, dim);
+x = x_init; %rand(N, dim);
 
 % Declaring residual
-r = - double(subs(Diff, X, x));
+r = - double(subs(Diff_E, X, x));
+r_new = r;
 % Declaring direction
 d = r;
-alpha = 1;
-
-k=1;
-
-x_temp = x;
-
-while norm(r) > tol && k <= it_max
-    
-    while norm(alpha.*d) > tol_star
-        if transpose(d)*double(subs(Hess,X,x_temp))*d >= 0
-            alpha = -(transpose(double(subs(Diff,X,x_temp)))*d)/(transpose(d)*(double(subs(Hess,X,x_temp)))*d);
-            x_temp = x_temp + alpha.*reshape(d.', [dim, N]);
-            % d = double(subs(Diff, X, x_temp));
+while norm(r) > tol
+    alpha = -(double(subs(Diff_E,X,x))'*d)/(d'*double(subs(Hess_E,X,x))*d);
+    while norm(alpha*d) > tol_star
+        if d'*double(subs(Hess_E,X,x))*d >= 0
+            alpha = -( double(subs(Diff_E,X,x)'*d)/(d'*(double(subs(Hess_E,X,x)))*d) );
+            x = x + alpha*(reshape(d.', [dim, N])).';
+            d = double(subs(Diff_E, X, x));
         else
-            x_temp = x_temp - 0.01.*reshape(d.', [dim, N]);
-            % d = double(subs(Diff, X, x_temp));
+            x = x - 0.01*(reshape(d.', [dim, N])).';
+            d = double(subs(Diff_E, X, x));
         end
     end
-    
-    % Update approximative solution
-    x = x_temp;
     % Update residual
-    r_new = - double(subs(Diff, X, x));
+    r_new = - double(subs(Diff_E, X, x));
     % Improvement for the step
     beta = r_new'*r_new/(r'*r);
     % Generating new search direction
     d = r_new + beta .* d;
     
-    % Updating the residual for second 'while' test
+    % Updating the residual
     r = r_new;
-    
-    k=k+1;
-    
 end
 
 end
